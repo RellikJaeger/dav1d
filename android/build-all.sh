@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Remove old build output dirs
-rm -rf build jniLibs tools
+rm -rf build jniLibs tools includes
 
 # Supported ABIs and corresponding cross-file names
 ABIS=("arm64-v8a" "armeabi-v7a" "x86" "x86_64")
@@ -19,7 +19,7 @@ for ((i=0; i<${#ABIS[@]}; i++)); do
   cd build/$abi
 
   # Configure the build system
-  meson setup ../../.. --cross-file=../../../package/crossfiles/$cross_file_name.meson
+  meson setup ../../.. --cross-file=../../../package/crossfiles/$cross_file_name.meson --buildtype release
 
   # Build the project
   ninja
@@ -38,6 +38,10 @@ for ((i=0; i<${#ABIS[@]}; i++)); do
   cp -r build/$abi/tools/dav1d tools/$abi/bin
 
   cp -r build/$abi/src/libdav1d.so tools/$abi/src
+
+  mkdir -p includes
+
+  cp -r build/$abi/include includes/$abi
 
 done
 
